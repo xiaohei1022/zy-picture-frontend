@@ -45,7 +45,7 @@
               <img
                 style="height: 180px; object-fit: cover"
                 :alt="picture.name"
-                :src="picture.url"
+                :src="picture.thumbUrl ?? picture.url"
               />
             </template>
             <a-card-meta :title="picture.name">
@@ -72,7 +72,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import {
   listPictureTagCategoryUsingGet,
-  listPictureVoByPageUsingPost,
+  listPictureVoByPageCacheUsingPost,
 } from '@/api/pictureController.ts'
 import { message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
@@ -120,7 +120,6 @@ const doClickPicture = (picture) => {
   })
 }
 
-
 // 分页参数
 const pagination = computed(() => {
   return {
@@ -152,7 +151,7 @@ const fetchData = async () => {
       params.tags.push(tagList.value[index])
     }
   })
-  const res = await listPictureVoByPageUsingPost(params)
+  const res = await listPictureVoByPageCacheUsingPost(params)
   if (res.data.data) {
     dataList.value = res.data.data.records ?? []
     total.value = res.data.data.total ?? 0
@@ -175,6 +174,7 @@ onMounted(() => {
   max-width: 480px;
   margin: 0 auto 16px;
 }
+
 .tag-bar {
   padding: 0 0 16px 0;
 }

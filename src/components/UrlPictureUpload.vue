@@ -11,7 +11,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { message, type UploadProps } from 'ant-design-vue'
-import { updatePictureUsingPost, uploadPictureByUrlUsingPost, uploadPictureUsingPost } from '@/api/pictureController.ts'
+import { uploadPictureByUrlUsingPost } from '@/api/pictureController.ts'
 
 
 interface Props {

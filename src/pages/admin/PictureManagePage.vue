@@ -119,21 +119,24 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import dayjs from 'dayjs'
 import {
+  deletePictureUsingPost,
   doPictureReviewUsingPost,
   listPictureByPageUsingPost,
   listPictureTagCategoryUsingGet
 } from '@/api/pictureController.ts'
 import { PIC_REVIEW_STATUS_ENUM, PIC_REVIEW_STATUS_MAP, PIC_REVIEW_STATUS_OPTIONS } from '../../constants/picture.ts'
+import { useRouter } from 'vue-router'
 
 const columns = [
   {
     title: 'id',
     dataIndex: 'id',
-    width: 80,
+    width: 85,
   },
   {
     title: '图片',
     dataIndex: 'url',
+    width: 140,
   },
   {
     title: '名称',
@@ -147,10 +150,12 @@ const columns = [
   {
     title: '类型',
     dataIndex: 'category',
+    width: 60,
   },
   {
     title: '标签',
     dataIndex: 'tags',
+    width: 60,
   },
   {
     title: '图片信息',
@@ -159,11 +164,12 @@ const columns = [
   {
     title: '用户 id',
     dataIndex: 'userId',
-    width: 80,
+    width: 85,
   },
   {
     title: '审核信息',
     dataIndex: 'reviewMessage',
+    width: 130,
   },
   {
     title: '创建时间',
@@ -176,6 +182,7 @@ const columns = [
   {
     title: '操作',
     key: 'action',
+    width: 80,
   },
 ]
 
@@ -257,6 +264,21 @@ const doTableChange = (page: any) => {
   searchParams.current = page.current
   searchParams.pageSize = page.pageSize
   fetchData()
+}
+
+const router = useRouter();
+// 删除
+const doDelete = async (id : number) => {
+  if (!id) {
+    return
+  }
+  const res = await deletePictureUsingPost({ id })
+  if (res.data.code === 0) {
+    message.success('删除成功')
+    router.push('/')
+  } else {
+    message.error('删除失败')
+  }
 }
 
 const handleReview = async (record: API.Picture, reviewStatus: number) => {
