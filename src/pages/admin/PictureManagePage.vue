@@ -236,6 +236,7 @@ const pagination = computed(() => {
 // 获取数据
 const fetchData = async () => {
   const res = await listPictureByPageUsingPost({
+    nullSpaceId: true,
     ...searchParams,
   })
   if (res.data.data) {
