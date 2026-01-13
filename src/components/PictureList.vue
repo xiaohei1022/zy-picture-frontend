@@ -31,27 +31,26 @@
               </template>
             </a-card-meta>
             <template v-if="showOp" #actions>
-              <a-space @click="e => doEdit(picture, e)">
-                <EditOutlined />
-                编辑
-              </a-space>
-              <a-space @click="e => doDelete(picture, e)">
-                <DeleteOutlined />
-                删除
-              </a-space>
+              <search-outlined @click="(e) => doSearch(picture, e)" />
+              <share-alt-outlined @click="(e) => doShare(picture, e)" />
+              <edit-outlined @click="(e) => doEdit(picture, e)" />
+              <delete-outlined @click="(e) => doDelete(picture, e)" />
             </template>
           </a-card>
         </a-list-item>
       </template>
     </a-list>
-  </div>
+  </div>.
+  <ShareModal ref="shareModalRef" :link="shareLink" />
 </template>
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { deletePictureUsingPost } from '@/api/pictureController.ts'
 import { message } from 'ant-design-vue'
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons-vue'
+import { EditOutlined, DeleteOutlined, SearchOutlined, ShareAltOutlined } from '@ant-design/icons-vue'
+import { ref } from 'vue'
+import ShareModal from '@/components/ShareModal.vue'
 
 interface Props {
   dataList?: API.PictureVO[]
@@ -72,6 +71,12 @@ const doClickPicture = (picture) => {
   router.push({
     path: `/picture/${picture.id}`,
   })
+}
+
+// 搜索
+const doSearch = (picture, e) => {
+  e.stopPropagation()
+  window.open(`/search_picture?pictureId=${picture.id}`)
 }
 
 // 编辑
@@ -100,6 +105,20 @@ const doDelete = async (picture, e) => {
     props?.onReload()
   } else {
     message.error('删除失败')
+  }
+}
+
+// 分享弹窗引用
+const shareModalRef = ref()
+// 分享链接
+const shareLink = ref<string>()
+
+// 分享
+const doShare = (picture: API.PictureVO, e: Event) => {
+  e.stopPropagation()
+  shareLink.value = `${window.location.protocol}//${window.location.host}/picture/${picture.id}`
+  if (shareModalRef.value) {
+    shareModalRef.value.openModal()
   }
 }
 </script>
